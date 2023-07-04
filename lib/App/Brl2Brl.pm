@@ -9,8 +9,7 @@ use Carp;
 
 our @EXPORT_OK = qw(parse_dis Conv switch_brl_char_map new);
 
-=pod
-=encoding=UTF-8
+=encoding utf8
 
 =head1 NAME
 
@@ -31,15 +30,13 @@ This module is useful if you have a text coded for one braille character set and
 
     use App::Brl2Brl;
 
-    my $brl_obj = App::Brl2Brl->new({ # to read in the specified files and
-                                      # store the characters/dots in hashes
+    my $brl_obj = App::Brl2Brl->new({ # to read in the specified files and store the characters/dots in hashes
       path => '/usr/share/liblouis/tables', # path to liblouis tables
       from_table_file => 'en-us-brf.dis', # or another display table
       to_table_file => 'unicode.dis', # or another display table
       warn => 1, # if you want to be warned if a char isn't defined in table
     });
-    my $out = $brl_obj->switch_brl_char_map('ABC123'); # switch from BRF to
-                                                       # Unicode braille
+    my $out = $brl_obj->switch_brl_char_map('ABC123'); # switch from BRF to Unicode braille
     print "$out\n";
 
 Or you may do:

@@ -101,7 +101,9 @@ while( <> ){
   print "$s";
 }
 
-#is decode_braille('us', "b"), "12", 'b in us encoding should be dot 12';
+__DATA__
+
+=encoding utf8
 
 =head1 NAME
 
@@ -119,15 +121,22 @@ A script to convert between braille character sets. If you for instance have mul
 
   $ brl2brl --from | -f <from_table_file> --to | -t <to_table_file> [--path | -p <path-to-liblouis-tables>] <file-to-convert>
   $ brl2brl -h | --help
+  $ brl2brl -l
 
-=encoding=UTF-8
+
 =head1 AUTHOR
 
 Lars Bjørndal
 
-=head1 LICENCE
+=head1 LICENSE AND COPYRIGHT
 
-Artistic
+This software is Copyright (c) 2023 by Lars Bjørndal.
+
+This is free software, licensed under:
+
+  The Artistic License 2.0 (GPL Compatible)
+
+
 
 =head1 INSTALLATION
 
