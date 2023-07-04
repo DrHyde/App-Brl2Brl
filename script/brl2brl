@@ -1,0 +1,144 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use open ':std', ':encoding(utf8)';
+use Getopt::Long qw(:config bundling);
+use App::Brl2Brl;
+my ( $path, $table_path );
+if( $ENV{'LOUIS_TABLEPATH'} ){
+  $table_path = $ENV{'LOUIS_TABLEPATH'};
+} else {
+  $table_path = '/usr/share/liblouis/tables/';
+} # if
+my( $helpme, $print_version, $warn, $list_files );
+my ($from_table_file, $to_table_file );
+sub get_params {
+  GetOptions( "h|help" => \$helpme,
+	      "V|version" => \$print_version,
+	      "w|warn" => \$warn,
+	      "l|list" => \$list_files,
+	      "p|path=s" => \$table_path,
+	      "f|from=s" => \$from_table_file,
+	      "t|to=s" => \$to_table_file
+	     )
+    or die "Error in command line arguments. Try $0 --help.";
+  if( $helpme || $print_version || $list_files ){
+    return 0;
+    exit;
+  } # if
+  unless( $from_table_file && $to_table_file ){
+    return 1;
+  } else {
+    return 0;
+  } # unless
+} # get_params
+
+sub usage {
+  print "Options:\n";
+  print "-p | --path - Path to liblouis table files. Default: /usr/share/liblouis/tables\n";
+  print "              or set environment variable LOUIS_TABLEPATH.\n";
+  print "-f | --from - The liblouis display table to convert from.\n";
+  print "-t | --to - The liblouis display table to convert to.\n";
+  print "-w | --warn - Warn about chars that are not defined in table.\n";
+  print "-l | --list - Lists available display tables in Liblouis path.\n";
+  print "-h | --help - This help screen.\n";
+  print "\n";
+  print "Use `perldoc brl2brl for complete documentation.\n";
+} # usage
+
+sub ver {
+  my $V = App::Brl2Brl->VERSION;
+  print "$0 version $V. The script belongs to the package App::Brl2Brl.\n";
+} # ver
+
+sub list_files {
+  opendir LLPATH, $table_path || die "Cannot open directory.\n";
+  my @files = sort readdir( LLPATH );
+  closedir( LLPATH );
+  my $found_dis = 0;
+  for my $fname (@files){
+    if( $fname =~ /\.dis$/ ){
+      print "$fname\n";
+      $found_dis++;
+    } # if
+  } # for
+  print "No Liblouis display tables found.\n" unless $found_dis >= 1;
+} # list_files
+
+Main:
+unless( get_params() == 0){
+  die "Error! Run $0 --help for usage information\n";
+  exit 1;
+}
+if( $helpme ){
+  usage();
+  exit 0;
+} # if
+
+if( $print_version ){
+  ver();
+  exit 0;
+} # if
+
+if( $list_files ){
+  list_files();
+  exit 0;
+} # if
+
+my $brl_obj = App::Brl2Brl->new( {
+  path => $table_path,
+  from_table_file => $from_table_file,
+  to_table_file => $to_table_file,
+} ); # new
+if( $warn ){
+  $brl_obj->warn => 1;
+} # if
+    
+    
+
+while( <> ){
+  my $s = $brl_obj->switch_brl_char_map( $_ );
+  print "$s";
+}
+
+#is decode_braille('us', "b"), "12", 'b in us encoding should be dot 12';
+
+=head1 NAME
+
+brl2brl - Converts between braille character sets found in liblouis.
+
+=head1 VERSION
+
+Version 0.03
+
+=head1 DESCRIPTION
+
+A script to convert between braille character sets. If you for instance have multiple braille printers with different characet set, you can use this script to convert the data you want to print accordingly. The respective display tables have to be present in liblouis.
+
+=head1 SYNOPSIS
+
+  $ brl2brl --from | -f <from_table_file> --to | -t <to_table_file> [--path | -p <path-to-liblouis-tables>] <file-to-convert>
+  $ brl2brl -h | --help
+
+=encoding=UTF-8
+=head1 AUTHOR
+
+Lars Bjørndal
+
+=head1 LICENCE
+
+Artistic
+
+=head1 INSTALLATION
+
+Using C<cpan>:
+
+  $ cpan App::Brl2Brl
+
+Manual install:
+
+  $ perl Makefile.pl
+  $ make
+  $ make install
+
+=cut
