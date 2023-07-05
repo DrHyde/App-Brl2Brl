@@ -21,11 +21,26 @@ my %WriteMakefileArgs = (
       'strict'   => 0,
       'warnings' => 0,
       'utf8' => 0,
+      'Exporter' => 0,
+      'Carp' => 0,
       'open' => 0,
       'Getopt::Long' => 0,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES => 'App-Brl2Brl-*' },
+    META_MERGE => {
+      'meta-spec' => { version => 2 },
+      resources => {
+	repository => {
+	  type => 'git',
+	  url => 'https://github.com/larsbjorndal/App-Brl2Brl.git',
+	  web => 'https://github.com/larsbjorndal/App-Brl2Brl',
+	},
+	bugtracker => {
+	  web => 'https://github.com/larsbjorndal/App-Brl2Brl/issues',
+	},
+      },
+    },      
 );
 
 # Compatibility with old versions of ExtUtils::MakeMaker
