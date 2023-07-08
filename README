@@ -1,12 +1,17 @@
 App-Brl2Brl
 
-This package contains the Perl module App::Brl2Brl and the command line script brl2brl. 
+This package contains the Perl module App::Brl2Brl and the command
+line script brl2brl.
 
 Version 0.03
 
 Use case
 
-Convert between braille character sets. If you for instance have multiple braille printers with different characet set, you can use this script to convert the data you want to print accordingly. The respective display tables have to be present in a directory, and they must have the format of Liblouis display tables (*.dis).
+Convert between braille character sets. If you for instance have
+multiple braille printers with different characet set, you can use
+this script to convert the data you want to print accordingly. The
+respective display tables have to be present in a directory, and they
+must have the format of Liblouis display tables (*.dis).
 
 
 INSTALLATION
