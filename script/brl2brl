@@ -10,12 +10,13 @@ if( $ENV{'LOUIS_TABLEPATH'} ){
 } else {
   $table_path = '/usr/share/liblouis/tables/';
 } # if
-my( $helpme, $print_version, $warn, $list_files );
+my( $helpme, $print_version, $warn, $list_files, $raw_data );
 my ($from_table_file, $to_table_file );
 sub get_params {
   GetOptions( "h|help" => \$helpme,
 	      "V|version" => \$print_version,
 	      "w|warn" => \$warn,
+	      "r|raw" => \$raw_data,
 	      "l|list" => \$list_files,
 	      "p|path=s" => \$table_path,
 	      "f|from=s" => \$from_table_file,
@@ -40,10 +41,11 @@ sub usage {
   print "-f | --from - The liblouis display table to convert from.\n";
   print "-t | --to - The liblouis display table to convert to.\n";
   print "-w | --warn - Warn about chars that are not defined in table.\n";
+  print "-r | --raw - Accepts indata other than utf8, e.g. CP1252.\n";
   print "-l | --list - Lists available display tables in Liblouis path.\n";
   print "-h | --help - This help screen.\n";
   print "\n";
-  print "Use `perldoc brl2brl for complete documentation.\n";
+  print "Use `perldoc brl2brl for additional documentation.\n";
 } # usage
 
 sub ver {
@@ -91,15 +93,23 @@ my $brl_obj = App::Brl2Brl->new( {
   to_table_file => $to_table_file,
 } ); # new
 if( $warn ){
-  $brl_obj->warn => 1;
+  $brl_obj->{warn} = 1;
 } # if
-    
-    
 
-while( <> ){
-  my $s = $brl_obj->switch_brl_char_map( $_ );
-  print "$s";
-}
+my $content;
+
+# If raw text, e.g. windows-1252.
+if( $raw_data ){
+  use open IO => ":raw";
+  binmode(STDIN);
+  $content = <>;
+} else {
+  $content = <>;
+} # if
+
+my $s = $brl_obj->switch_brl_char_map( $content );
+
+print "$s";
 
 __DATA__
 

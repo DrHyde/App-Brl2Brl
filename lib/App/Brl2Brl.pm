@@ -171,6 +171,10 @@ sub Conv {
 
   my( $dots, $outC, $outstr);
   foreach my $inC (split( //, $inputstr )){
+    if( $inC =~ /([\r\n\f])/ ){
+      $outstr .= $inC;
+      next;
+    } # if
     if( !exists $from_tab{$inC} ) {
       $outstr .= $inC;
       carp "Warning: Character $inC isn't defined in input table!\n" if( defined $warn && $warn != 0);
