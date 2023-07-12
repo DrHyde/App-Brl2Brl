@@ -2,6 +2,7 @@ use 5.006;
 use strict;
 use warnings;
 use ExtUtils::MakeMaker;
+use utf8;
 
 my %WriteMakefileArgs = (
     NAME             => 'App::Brl2Brl',
