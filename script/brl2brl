@@ -104,6 +104,7 @@ if( $raw_data ){
   binmode(STDIN);
   $content = <>;
 } else {
+  local $/;
   $content = <>;
 } # if
 
