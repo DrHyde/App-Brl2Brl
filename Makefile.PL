@@ -2,7 +2,10 @@ use 5.006;
 use strict;
 use warnings;
 use ExtUtils::MakeMaker;
+use File::ShareDir::Install;
 use utf8;
+
+install_share 'share';
 
 my %WriteMakefileArgs = (
     NAME             => 'App::Brl2Brl',
@@ -14,9 +17,11 @@ my %WriteMakefileArgs = (
     EXE_FILES => ['script/brl2brl'],
     CONFIGURE_REQUIRES => {
         'ExtUtils::MakeMaker' => '0',
+        'File::ShareDir::Install' => 0.11,
     },
     TEST_REQUIRES => {
-        'Test::More' => '0',
+        'Test::More' => '0.88',
+        'Test::Exception' => 0,
     },
     PREREQ_PM => {
       'strict'   => 0,
@@ -25,6 +30,7 @@ my %WriteMakefileArgs = (
       'Exporter' => 0,
       'Carp' => 0,
       'open' => 0,
+      'File::ShareDir' => 1.104,
       'Getopt::Long' => 0,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
@@ -41,7 +47,7 @@ my %WriteMakefileArgs = (
 	  web => 'https://github.com/larsbjorndal/App-Brl2Brl/issues',
 	},
       },
-    },      
+    },
 );
 
 # Compatibility with old versions of ExtUtils::MakeMaker
@@ -63,3 +69,6 @@ delete $WriteMakefileArgs{LICENSE}
     unless eval { ExtUtils::MakeMaker->VERSION('6.31'); 1 };
 
 WriteMakefile(%WriteMakefileArgs);
+
+package MY;
+use File::ShareDir::Install qw(postamble);
