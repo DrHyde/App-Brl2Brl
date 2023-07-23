@@ -6,6 +6,7 @@ use warnings FATAL => 'all';
 use utf8;
 use Exporter qw(import);
 use Carp;
+use File::ShareDir qw(dist_dir);
 
 our @EXPORT_OK = qw(parse_dis Conv switch_brl_char_map new);
 
@@ -31,7 +32,6 @@ This module is useful if you have a text coded for one braille character set and
     use App::Brl2Brl;
 
     my $brl_obj = App::Brl2Brl->new({ # to read in the specified files and store the characters/dots in hashes
-      path => '/usr/share/liblouis/tables', # path to liblouis tables
       from_table_file => 'en-us-brf.dis', # or another display table
       to_table_file => 'unicode.dis', # or another display table
       warn => 1, # if you want to be warned if a char isn't defined in table
@@ -43,12 +43,11 @@ Or you may do:
 
     use App::Brl2Brl;
 
-    my $table_path = '/usr/share/liblouis/tables/';
     my $from_table_file = 'en-us-brf.dis';
     my $to_table_file = 'unicode.dis';
 
-    my %from_table = parse_dis( "$table_path/$from_table_file" );
-    my %to_table = parse_dis( "$table_path/$to_table_file" );
+    my %from_table = parse_dis( "$from_table_file" );
+    my %to_table = parse_dis( "$to_table_file" );
     while( <> ){
       my $out = Conv( \%from_table, \%to_table, $_);
       print "$out\n";
@@ -72,10 +71,29 @@ Takes the following parameters:
       to_table_file => 'unicode.dis', # or another display table
       warn => 1, # if you want to be warned if a char isn't defined in table
 
+The path is optional. App::Brl2Brl comes with a copy of the data files
+and knows where to find them. Only provide this if you want to use a
+different set of data files, perhaps a more recent one. As with most
+liblouis software you can also set C<LOUIS_TABLEPATH> in your environment.
+
+The order of precedence is that the value in a C<path> argument will be used,
+falling back to C<LOUIS_TABLEPATH>, falling back to using the data bundled with
+the module.
+
 =cut
 
 sub new {
   my ($class,$args) = @_;
+
+  # figure out which path to use
+  if(!exists($args->{path})) {
+      if(exists($ENV{LOUIS_TABLEPATH})) {
+          $args->{path} = $ENV{LOUIS_TABLEPATH};
+      } else {
+          $args->{path} = dist_dir('App-Brl2Brl');
+      }
+  }
+
   my $self = {
     path => $args->{path},
     from_table_file => $args->{from_table_file},
@@ -250,6 +268,12 @@ This is free software, licensed under:
 
   The Artistic License 2.0 (GPL Compatible)
 
+It includes data files in the C<share> directory copied from
+v3.26.0 of
+L<liblouis|https://github.com/liblouis/liblouis/tree/v3.26.0/tables>.
+Liblouis is free software licensed under the
+L<GNU LGPLv2.1+|https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html>
+(see the file COPYING.LESSER).
 
 =cut
 

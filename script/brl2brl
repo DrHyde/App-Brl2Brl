@@ -2,13 +2,14 @@
 use strict;
 use warnings;
 use open ':std', ':encoding(utf8)';
+use File::ShareDir qw(dist_dir);
 use Getopt::Long qw(:config bundling);
 use App::Brl2Brl;
 my ( $path, $table_path );
 if( $ENV{'LOUIS_TABLEPATH'} ){
   $table_path = $ENV{'LOUIS_TABLEPATH'};
 } else {
-  $table_path = '/usr/share/liblouis/tables/';
+  $table_path = dist_dir('App-Brl2Brl');
 } # if
 my( $helpme, $print_version, $warn, $list_files, $raw_data );
 my ($from_table_file, $to_table_file );
